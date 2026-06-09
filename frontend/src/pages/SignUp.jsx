@@ -97,6 +97,7 @@ function SignUp() {
                         <button className='absolute right-3 cursor-pointer top-[14px] text-gray-500' onClick={() => setShowPassword(prev => !prev)}>{!showPassword ? <FaRegEye /> : <FaRegEyeSlash />}</button>
                     </div>
                 </div>
+                
                 {/* role*/}
 
                 <div className='mb-4'>
