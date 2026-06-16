@@ -220,7 +220,7 @@ export const updateOrderStatus = async (req, res) => {
         }
         shopOrder.status = status
         let deliveryBoysPayload = []
-        if (status == "out of delivery" && !shopOrder.assignment) {
+        if (status == "out for delivery" && !shopOrder.assignment) {
             const { longitude, latitude } = order.deliveryAddress
             const nearByDeliveryBoys = await User.find({
                 role: "deliveryBoy",
