@@ -55,12 +55,12 @@ const dispatch=useDispatch()
     <option value="">Change</option>
 <option value="pending">Pending</option>
 <option value="preparing">Preparing</option>
-<option value="out of delivery">Out Of Delivery</option>
+<option value="out for delivery">Out for Delivery</option>
 </select>
 
 </div>
 
-{data.shopOrders.status=="out of delivery" && 
+{data.shopOrders.status=="out for delivery" && 
 <div className="mt-3 p-2 border rounded-lg text-sm bg-orange-50 gap-4">
     {data.shopOrders.assignedDeliveryBoy?<p>Assigned Delivery Boy:</p>:<p>Available Delivery Boys:</p>}
    {availableBoys?.length>0?(
