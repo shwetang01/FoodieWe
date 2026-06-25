@@ -10,8 +10,11 @@ import itemRouter from "./routes/item.routes.js"
 import orderRouter from "./routes/order.routes.js"
 import cors from "cors"
 
-
+import http from "http"
 const app = express()
+const server = http.createServer(app)
+
+
 const port = process.env.PORT || 5000
 
 app.use(cors({
@@ -33,7 +36,7 @@ app.use("/api/order",orderRouter)
 
 
 
-app.listen(port, () => {
+server.listen(port, () => {
     connectDb()
   console.log(`server started at ${port}`)
   
