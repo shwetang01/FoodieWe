@@ -271,6 +271,7 @@ export const updateOrderStatus = async (req, res) => {
 
             await deliveryAssignment.populate('order')
             await deliveryAssignment.populate('shop')
+            
             const io = req.app.get('io')
             if (io) {
                 availableBoys.forEach(boy => {
@@ -546,6 +547,7 @@ export const getTodayDeliveries=async (req,res) => {
         }).lean()
 
      let todaysDeliveries=[] 
+     
      
      orders.forEach(order=>{
         order.shopOrders.forEach(shopOrder=>{
