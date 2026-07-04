@@ -63,7 +63,7 @@ setLiveLocations(prev=>({
         lat: shopOrder.assignedDeliveryBoy.location.coordinates[1],
         lon: shopOrder.assignedDeliveryBoy.location.coordinates[0]
       },
-      customerLocation: {
+      customerLocation: { 
         lat: currentOrder.deliveryAddress.latitude,
         lon: currentOrder.deliveryAddress.longitude
       }

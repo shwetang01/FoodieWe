@@ -10,9 +10,26 @@ import itemRouter from "./routes/item.routes.js"
 import orderRouter from "./routes/order.routes.js"
 import cors from "cors"
 
+
 import http from "http"
+import { Server } from "socket.io"
+import { socketHandler } from "./socket.js"
+
 const app = express()
 const server = http.createServer(app)
+
+const io= new Server(server,{
+  cors:{
+    origin:"http://localhost:5173",
+    credentials:true,
+
+    methods:["GET","POST"]  
+  }
+
+})
+
+app.set("io",io)
+
 
 
 const port = process.env.PORT || 5000
@@ -33,7 +50,7 @@ app.use("/api/order",orderRouter)
 
 
 
-
+socketHandler(io)
 
 
 server.listen(port, () => {
