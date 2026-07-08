@@ -18,26 +18,29 @@ import { socketHandler } from "./socket.js"
 const app = express()
 const server = http.createServer(app)
 
+const allowedOrigins = ["http://localhost:5173", "https://foodiewe.onrender.com"];
+
 const io= new Server(server,{
   cors:{
-    origin:"http://localhost:5173",
+    origin: allowedOrigins,
     credentials:true,
-
     methods:["GET","POST"]  
   }
-
 })
 
 app.set("io",io)
 
-
-
 const port = process.env.PORT || 5000
 
 app.use(cors({
-    origin:"http://localhost:5173",
+    origin: function (origin, callback) {
+        if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     credentials: true
-
 }))
 app.use(express.json())
 app.use(cookieParser())
