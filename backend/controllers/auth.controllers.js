@@ -36,7 +36,7 @@ export const signUp=async (req,res) => {
         return res.status(201).json(user)
 
     } catch (error) {
-        return res.status(500).json(`sign up error ${error}`)
+        return res.status(500).json({ message: `Sign up error: ${error.message || error}` })
     }
 }
 
@@ -46,6 +46,10 @@ export const signIn=async (req,res) => {
         const user=await User.findOne({email})
         if(!user){
             return res.status(400).json({message:"User does not exist."})
+        }
+        
+        if(!user.password){
+            return res.status(400).json({message:"This account was registered using Google. Please sign in with Google."})
         }
         
      const isMatch=await bcrypt.compare(password,user.password)
@@ -64,7 +68,7 @@ export const signIn=async (req,res) => {
         return res.status(200).json(user)
 
     } catch (error) {
-        return res.status(500).json(`sign In error ${error}`)
+        return res.status(500).json({ message: `Sign In error: ${error.message || error}` })
     }
 }
 
@@ -73,7 +77,7 @@ export const signOut=async (req,res) => {
         res.clearCookie("token")
 return res.status(200).json({message:"log out successfully"})
     } catch (error) {
-        return res.status(500).json(`sign out error ${error}`)
+        return res.status(500).json({ message: `Sign out error: ${error.message || error}` })
     }
 }
 
@@ -92,7 +96,7 @@ export const sendOtp=async (req,res) => {
     await sendOtpMail(email,otp)
     return res.status(200).json({message:"otp sent successfully"})
   } catch (error) {
-     return res.status(500).json(`send otp error ${error}`)
+     return res.status(500).json({ message: `Send OTP error: ${error.message || error}` })
   }  
 }
 
@@ -109,7 +113,7 @@ export const verifyOtp=async (req,res) => {
         await user.save()
         return res.status(200).json({message:"otp verify successfully"})
     } catch (error) {
-         return res.status(500).json(`verify otp error ${error}`)
+         return res.status(500).json({ message: `Verify OTP error: ${error.message || error}` })
     }
 }
 
@@ -126,7 +130,7 @@ export const resetPassword=async (req,res) => {
     await user.save()
      return res.status(200).json({message:"password reset successfully"})
     } catch (error) {
-         return res.status(500).json(`reset password error ${error}`)
+         return res.status(500).json({ message: `Reset password error: ${error.message || error}` })
     }
 }
 
@@ -152,6 +156,6 @@ export const googleAuth=async (req,res) => {
 
 
     } catch (error) {
-         return res.status(500).json(`googleAuth error ${error}`)
+         return res.status(500).json({ message: `Google Auth error: ${error.message || error}` })
     }
 }
