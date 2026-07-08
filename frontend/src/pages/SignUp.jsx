@@ -55,9 +55,11 @@ function SignUp() {
         role,
         mobile
     },{withCredentials:true})
-   dispatch(setUserData(data))
+    dispatch(setUserData(data))
+    setErr("")
   } catch (error) {
     console.log(error)
+    setErr(error?.response?.data?.message || "Google Registration failed")
   }
      }
     return (

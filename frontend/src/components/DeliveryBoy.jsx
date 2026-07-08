@@ -159,7 +159,7 @@ handleTodayDeliveries()
     <Tooltip formatter={(value)=>[value,"orders"]} labelFormatter={label=>`${label}:00`}/>
       <Bar dataKey="count" fill='#ff4d2d'/>
    </BarChart>
-   
+    
   </ResponsiveContainer>
 
   <div className='max-w-sm mx-auto mt-6 p-6 bg-white rounded-2xl shadow-lg text-center'>
