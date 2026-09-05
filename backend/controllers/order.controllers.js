@@ -182,7 +182,7 @@ export const getMyOrders = async (req, res) => {
             const orders = await Order.find({ "shopOrders.owner": req.userId })
                 .sort({ createdAt: -1 })
                 .populate("shopOrders.shop", "name")
-                .populate("user")
+                .populate("user", "-password -resetOtp -otpExpires -isOtpVerified")
                 .populate("shopOrders.shopOrderItems.item", "name image price")
                 .populate("shopOrders.assignedDeliveryBoy", "fullName mobile")
 
@@ -212,6 +212,12 @@ export const updateOrderStatus = async (req, res) => {
     try {
         const { orderId, shopId } = req.params
         const { status } = req.body
+        
+        const shop = await Shop.findById(shopId)
+        if (!shop || shop.owner.toString() !== req.userId.toString()) {
+            return res.status(403).json({ message: "Forbidden: You do not own this shop" })
+        }
+
         const order = await Order.findById(orderId)
 
         const shopOrder = order.shopOrders.find(o => o.shop == shopId)
@@ -463,14 +469,15 @@ export const getOrderById = async (req, res) => {
     try {
         const { orderId } = req.params
         const order = await Order.findById(orderId)
-            .populate("user")
+            .populate("user", "-password -resetOtp -otpExpires -isOtpVerified")
             .populate({
                 path: "shopOrders.shop",
                 model: "Shop"
             })
             .populate({
                 path: "shopOrders.assignedDeliveryBoy",
-                model: "User"
+                model: "User",
+                select: "-password -resetOtp -otpExpires -isOtpVerified"
             })
             .populate({
                 path: "shopOrders.shopOrderItems.item",
@@ -490,7 +497,7 @@ export const getOrderById = async (req, res) => {
 export const sendDeliveryOtp = async (req, res) => {
     try {
         const { orderId, shopOrderId } = req.body
-        const order = await Order.findById(orderId).populate("user")
+        const order = await Order.findById(orderId).populate("user", "-password -resetOtp -otpExpires -isOtpVerified")
         const shopOrder = order.shopOrders.id(shopOrderId)
         if (!order || !shopOrder) {
             return res.status(400).json({ message: "enter valid order/shopOrderid" })
@@ -509,7 +516,7 @@ export const sendDeliveryOtp = async (req, res) => {
 export const verifyDeliveryOtp = async (req, res) => {
     try {
         const { orderId, shopOrderId, otp } = req.body
-        const order = await Order.findById(orderId).populate("user")
+        const order = await Order.findById(orderId).populate("user", "-password -resetOtp -otpExpires -isOtpVerified")
         const shopOrder = order.shopOrders.id(shopOrderId)
         if (!order || !shopOrder) {
             return res.status(400).json({ message: "enter valid order/shopOrderid" })

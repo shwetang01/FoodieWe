@@ -6,12 +6,14 @@ import { upload } from "../middlewares/multer.js"
 
 
 
+import { requireRole } from "../middlewares/requireRole.js"
+
 const itemRouter=express.Router()
 
-itemRouter.post("/add-item",isAuth,upload.single("image"),addItem)
-itemRouter.post("/edit-item/:itemId",isAuth,upload.single("image"),editItem)
+itemRouter.post("/add-item",isAuth, requireRole(["owner"]),upload.single("image"),addItem)
+itemRouter.post("/edit-item/:itemId",isAuth, requireRole(["owner"]),upload.single("image"),editItem)
 itemRouter.get("/get-by-id/:itemId",isAuth,getItemById)
-itemRouter.get("/delete/:itemId",isAuth,deleteItem)
+itemRouter.get("/delete/:itemId",isAuth, requireRole(["owner"]),deleteItem)
 itemRouter.get("/get-by-city/:city",isAuth,getItemByCity)
 itemRouter.get("/get-by-shop/:shopId",isAuth,getItemsByShop)
 itemRouter.get("/search-items",isAuth,searchItems)
