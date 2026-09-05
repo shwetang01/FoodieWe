@@ -50,6 +50,16 @@ coordinates:{type:[Number],default:[0,0]}
 
 userSchema.index({location:'2dsphere'})
 
+userSchema.set('toJSON', {
+    transform: function(doc, ret) {
+        delete ret.password;
+        delete ret.resetOtp;
+        delete ret.otpExpires;
+        delete ret.isOtpVerified;
+        return ret;
+    }
+});
+
 
 const User=mongoose.model("User",userSchema)
 export default User

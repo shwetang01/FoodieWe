@@ -39,12 +39,19 @@ export const editItem = async (req, res) => {
         if (req.file) {
             image = await uploadOnCloudinary(req.file.path)
         }
+        const existingItem = await Item.findById(itemId)
+        if (!existingItem) {
+            return res.status(400).json({ message: "item not found" })
+        }
+        
+        const shopOwner = await Shop.findById(existingItem.shop)
+        if (!shopOwner || shopOwner.owner.toString() !== req.userId.toString()) {
+            return res.status(403).json({ message: "Forbidden: You do not own this item" })
+        }
+
         const item = await Item.findByIdAndUpdate(itemId, {
             name, category, foodType, price, image
         }, { new: true })
-        if (!item) {
-            return res.status(400).json({ message: "item not found" })
-        }
         const shop = await Shop.findOne({ owner: req.userId }).populate({
             path: "items",
             options: { sort: { updatedAt: -1 } }
@@ -72,12 +79,19 @@ export const getItemById = async (req, res) => {
 export const deleteItem = async (req, res) => {
     try {
         const itemId = req.params.itemId
-        const item = await Item.findByIdAndDelete(itemId)
-        if (!item) {
+        const existingItem = await Item.findById(itemId)
+        if (!existingItem) {
             return res.status(400).json({ message: "item not found" })
         }
-        const shop = await Shop.findOne({ owner: req.userId })
-        shop.items = shop.items.filter(i => i !== item._id)
+
+        const shop = await Shop.findById(existingItem.shop)
+        if (!shop || shop.owner.toString() !== req.userId.toString()) {
+            return res.status(403).json({ message: "Forbidden: You do not own this item" })
+        }
+
+        const item = await Item.findByIdAndDelete(itemId)
+        
+        shop.items = shop.items.filter(i => i.toString() !== item._id.toString())
         await shop.save()
         await shop.populate({
             path: "items",
