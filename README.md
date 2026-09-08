@@ -25,7 +25,6 @@ graph TB
         Cloudinary["☁️ Cloudinary (Image Hosting)"]
         Razorpay["💳 Razorpay (Online Payments)"]
         Nodemailer["📧 Nodemailer (Email OTPs)"]
-        Firebase["🔥 Firebase (Google Auth)"]
     end
 
     subgraph Data_Tier["Database Tier (MongoDB Atlas)"]
@@ -45,7 +44,6 @@ graph TB
     APIServer --> Nodemailer
     APIServer --> MongoDB
     SocketServer --> MongoDB
-    Customer --> Firebase
 ```
 
 ---
@@ -77,9 +75,21 @@ The system has three specialized dashboards depending on who logs in:
 *   **Frontend**: React.js (Vite), Redux Toolkit (state management), React Router DOM (navigation), Tailwind CSS (styling), React Leaflet (maps), Recharts (earnings analytics).
 *   **Backend**: Node.js, Express.js, Socket.io (WebSocket connections for real-time tracking).
 *   **Database**: MongoDB & Mongoose (with Geospatial 2dsphere indexing for location matching).
-*   **Security & Cloud**: JSON Web Tokens (JWT) for sessions, bcryptjs for password security, Cloudinary API for image uploads, Nodemailer for OTPs, and Firebase Auth for Google Sign-In.
+*   **Security & Cloud**: JSON Web Tokens (JWT) for sessions, bcryptjs for password security, Cloudinary API for image uploads, and Nodemailer for OTPs.
 
 ---
+
+## 🔑 Demo Accounts for Testing & Evaluation
+
+You can use the pre-configured demo accounts to test each role's dashboard instantly:
+
+| Role | Email | Password | Dashboard Features |
+| :--- | :--- | :--- | :--- |
+| 🧑 **Customer** | `customer@foodiewe.com` | `password123` | Food browsing, search, cart, checkout & live tracking |
+| 👨‍🍳 **Restaurant Owner** | `owner@foodiewe.com` | `password123` | Shop management, menu CRUD & kitchen order fulfillment |
+| 🛵 **Delivery Agent** | `delivery@foodiewe.com` | `password123` | Order acceptance radar, GPS streaming, OTP delivery & analytics |
+
+*(You can also use the **⚡ 1-Click Demo Logins** available directly on the [Sign-In page](http://localhost:5173/signin))*
 
 ## 💻 Running it Locally
 
@@ -129,7 +139,6 @@ cd FoodieWe
    ```
 2. Create a `.env` file in the `frontend` folder and add your API keys:
    ```env
-   VITE_FIREBASE_APIKEY="your-firebase-api-key"
    VITE_GEOAPIKEY="your-geo-location-api-key"
    VITE_RAZORPAY_KEY_ID="your-razorpay-key-id"
    ```
