@@ -6,6 +6,50 @@ It connects hungry customers, local shop owners, and delivery agents together wi
 
 ---
 
+## 🏛️ System Architecture
+
+```mermaid
+graph TB
+    subgraph Client_Tier["Frontend Tier (React + Vite + Redux)"]
+        Customer["🧑 Customer App<br/>• Auto-Location Search<br/>• Cart & Checkout<br/>• Live Order Tracking"]
+        Owner["👨‍🍳 Shop Owner App<br/>• Shop Profile & Menu CRUD<br/>• Real-Time Order Alerts<br/>• Order Status Updates"]
+        Delivery["🛵 Delivery Agent App<br/>• Live GPS Streaming<br/>• Order Acceptance Radar<br/>• OTP Delivery Verification"]
+    end
+
+    subgraph Server_Tier["Backend Server (Node.js + Express 5)"]
+        APIServer["REST API Router<br/>(Auth, Users, Shops, Items, Orders)"]
+        SocketServer["Socket.IO Server<br/>(Live Location & Event Broadcasting)"]
+    end
+
+    subgraph Cloud_Tier["Cloud & External Services"]
+        Cloudinary["☁️ Cloudinary (Image Hosting)"]
+        Razorpay["💳 Razorpay (Online Payments)"]
+        Nodemailer["📧 Nodemailer (Email OTPs)"]
+        Firebase["🔥 Firebase (Google Auth)"]
+    end
+
+    subgraph Data_Tier["Database Tier (MongoDB Atlas)"]
+        MongoDB[("MongoDB Atlas<br/>• Users (2dsphere GeoJSON Index)<br/>• Shops & Menu Items<br/>• Orders & Delivery Assignments")]
+    end
+
+    Customer -->|"REST API"| APIServer
+    Owner -->|"REST API"| APIServer
+    Delivery -->|"REST API"| APIServer
+
+    Customer <-->|"WebSockets"| SocketServer
+    Owner <-->|"WebSockets"| SocketServer
+    Delivery <-->|"WebSockets (GPS Coordinates)"| SocketServer
+
+    APIServer --> Cloudinary
+    APIServer --> Razorpay
+    APIServer --> Nodemailer
+    APIServer --> MongoDB
+    SocketServer --> MongoDB
+    Customer --> Firebase
+```
+
+---
+
 ## 🚀 Features
 
 The system has three specialized dashboards depending on who logs in:
@@ -13,27 +57,27 @@ The system has three specialized dashboards depending on who logs in:
 ### 1. For Customers (Users)
 *   **Auto-Location Proximity**: The app detects your city using your browser's GPS and automatically filters shops and food items near you.
 *   **Food Shopping & Cart**: Search for meals, filter by categories, customize your cart, and check out.
-*   **Secure Checkout**: Pay instantly online using the integrated **Razorpay** payment gateway.
-*   **Live Order Tracking**: Watch your delivery boy move on an interactive map in real-time as they bring your food.
+*   **Secure Checkout**: Pay instantly online using the integrated **Razorpay** payment gateway or choose Cash on Delivery (COD).
+*   **Live Order Tracking**: Watch your delivery boy move on an interactive Leaflet map in real-time as they bring your food.
 
 ### 2. For Shop Owners
 *   **Shop Management**: Create your shop, upload banner images, and set up your details.
 *   **Menu CRUD**: Easily add, edit, or delete items on your menu (complete with pricing, description, and images).
-*   **Order Center**: Receive orders, accept them, prepare them, and transition them to "out for delivery" to notify nearby delivery agents.
+*   **Order Center**: Receive real-time orders, accept them, prepare them, and transition them to "out for delivery" to automatically dispatch to nearby delivery agents.
 
 ### 3. For Delivery Agents
-*   **Order Alerts**: Get notified of new orders that need to be delivered.
+*   **Order Alerts**: Get notified of new broadcasted delivery assignments within a 5km radius.
 *   **Live Geolocation**: Stream your active location coordinates to the customer using WebSockets as you ride.
-*   **OTP-Verified Deliveries**: Complete deliveries safely by verifying a unique 4-digit OTP provided by the customer.
+*   **OTP-Verified Deliveries**: Complete deliveries safely by verifying a unique 4-digit OTP sent to the customer's email.
 
 ---
 
 ## 🛠️ The Tech Stack
 
-*   **Frontend**: React.js (Vite), Redux Toolkit (state management), React Router DOM (navigation), Tailwind CSS (styling), React Leaflet (maps).
+*   **Frontend**: React.js (Vite), Redux Toolkit (state management), React Router DOM (navigation), Tailwind CSS (styling), React Leaflet (maps), Recharts (earnings analytics).
 *   **Backend**: Node.js, Express.js, Socket.io (WebSocket connections for real-time tracking).
 *   **Database**: MongoDB & Mongoose (with Geospatial 2dsphere indexing for location matching).
-*   **Security & Files**: JSON Web Tokens (JWT) for sessions, bcryptjs for password security, Cloudinary API for image uploads, and Firebase Auth for Google Sign-In.
+*   **Security & Cloud**: JSON Web Tokens (JWT) for sessions, bcryptjs for password security, Cloudinary API for image uploads, Nodemailer for OTPs, and Firebase Auth for Google Sign-In.
 
 ---
 
