@@ -107,14 +107,11 @@ export const deleteItem = async (req, res) => {
 export const getItemByCity = async (req, res) => {
     try {
         const { city } = req.params
-        if (!city) {
-            return res.status(400).json({ message: "city is required" })
-        }
-        const shops = await Shop.find({
+        let shops = await Shop.find({
             city: { $regex: new RegExp(`^${city}$`, "i") }
         }).populate('items')
-        if (!shops) {
-            return res.status(400).json({ message: "shops not found" })
+        if (!shops || shops.length === 0) {
+            shops = await Shop.find().populate('items')
         }
         const shopIds=shops.map((shop)=>shop._id)
 
@@ -144,14 +141,14 @@ export const getItemsByShop=async (req,res) => {
 export const searchItems=async (req,res) => {
     try {
         const {query,city}=req.query
-        if(!query || !city){
-            return null
+        if(!query){
+            return res.status(200).json([])
         }
-        const shops=await Shop.find({
+        let shops=await Shop.find({
             city:{$regex:new RegExp(`^${city}$`, "i")}
         }).populate('items')
-        if(!shops){
-            return res.status(400).json({message:"shops not found"})
+        if(!shops || shops.length === 0){
+            shops = await Shop.find().populate('items')
         }
         const shopIds=shops.map(s=>s._id)
         const items=await Item.find({

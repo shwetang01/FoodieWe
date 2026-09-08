@@ -439,7 +439,7 @@ export const getCurrentOrder = async (req, res) => {
         }
 
         let deliveryBoyLocation = { lat: null, lon: null }
-        if (assignment.assignedTo.location.coordinates.length == 2) {
+        if (assignment.assignedTo?.location?.coordinates?.length == 2) {
             deliveryBoyLocation.lat = assignment.assignedTo.location.coordinates[1]
             deliveryBoyLocation.lon = assignment.assignedTo.location.coordinates[0]
         }
