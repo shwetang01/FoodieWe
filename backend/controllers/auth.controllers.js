@@ -25,10 +25,11 @@ export const signUp=async (req,res) => {
             password:hashedPassword
         })
 
-        const token=await genToken(user._id)
+        const token = await genToken(user._id);
+        const isProduction = process.env.NODE_ENV === "production";
         res.cookie("token",token,{
-            secure:true,
-            sameSite:"none",
+            secure: isProduction,
+            sameSite: isProduction ? "none" : "lax",
             maxAge:7*24*60*60*1000,
             httpOnly:true
         })
@@ -57,10 +58,11 @@ export const signIn=async (req,res) => {
          return res.status(400).json({message:"incorrect Password"})
      }
 
-        const token=await genToken(user._id)
+        const token = await genToken(user._id);
+        const isProduction = process.env.NODE_ENV === "production";
         res.cookie("token",token,{
-            secure:true,
-            sameSite:"none",
+            secure: isProduction,
+            sameSite: isProduction ? "none" : "lax",
             maxAge:7*24*60*60*1000,
             httpOnly:true
         })
@@ -137,17 +139,24 @@ export const resetPassword=async (req,res) => {
 export const googleAuth=async (req,res) => {
     try {
         const {fullName,email,mobile,role}=req.body
+        if(!email){
+            return res.status(400).json({message:"Email is required for Google authentication"})
+        }
         let user=await User.findOne({email})
         if(!user){
             user=await User.create({
-                fullName,email,mobile,role
+                fullName: fullName || email.split("@")[0],
+                email,
+                mobile: mobile || "",
+                role: role || "user"
             })
         }
 
-        const token=await genToken(user._id)
+        const token = await genToken(user._id);
+        const isProduction = process.env.NODE_ENV === "production";
         res.cookie("token",token,{
-          secure:true,
-            sameSite:"none",
+            secure: isProduction,
+            sameSite: isProduction ? "none" : "lax",
             maxAge:7*24*60*60*1000,
             httpOnly:true
         })

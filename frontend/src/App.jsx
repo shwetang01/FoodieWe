@@ -25,7 +25,7 @@ import { useEffect } from 'react'
 import { io } from 'socket.io-client'
 import { setSocket } from './redux/userSlice'
 
-export const serverUrl="https://foodiewe-backend.onrender.com"
+export const serverUrl = import.meta.env.VITE_SERVER_URL || (import.meta.env.DEV ? "http://localhost:8000" : "https://foodiewe-backend.onrender.com");
 function App() {
     const {userData}=useSelector(state=>state.user)
     const dispatch=useDispatch()
